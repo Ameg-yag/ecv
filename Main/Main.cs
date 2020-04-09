@@ -1,7 +1,10 @@
 
 using ecv.crypto;
 using ecv.enums;
+using ecv.exceptions;
+using System;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace ecv.main
@@ -13,12 +16,12 @@ namespace ecv.main
         private string Password;
         private AESGCM _gcm;
 
-        public Main(string Operation, string FilePath)
+        public Main(string operation, string filePath)
         {
-            this.Operation = Operation;
-            this.FilePath = FilePath;
-        }
+            this.Operation = operation;
+            this.FilePath = filePath;
 
+        }
         public Main() { }
 
         private string handleLargeFile(AESOps op)
@@ -50,24 +53,64 @@ namespace ecv.main
 
         private void Check()
         {
-            string content = handleLargeFile(AESOps.Decrypt);
+            try
+            {
+                string content = handleLargeFile(AESOps.Decrypt);
+                Console.WriteLine("Reliable");
+            }
+            catch (CryptographicException e)
+            {
+                throw new DecryptionFailedException("Integrity Failed for file: " + this.FilePath + " Corrupted file or wrong password\n");
+            }
         }
 
         private void Create()
         {
-            string content = handleLargeFile(AESOps.Encrypt);
+            string content = "";
+            try
+            {
+                content = handleLargeFile(AESOps.Encrypt);
+            }
+            catch (CryptographicException e)
+            {
+                throw new EncryptionFailedException("Failed encrypting file: " + this.FilePath + "\n");
+            }
+            this.StoreToDisk(content, AESOps.Encrypt);
         }
 
         private void Recover()
         {
-            string content = handleLargeFile(AESOps.Decrypt);
+            string content = "";
+            try
+            {
+                content = handleLargeFile(AESOps.Decrypt);
+            }
+            catch (CryptographicException e)
+            {
+                throw new DecryptionFailedException("Failed Recovering file: " + this.FilePath + " File corrupted or wrong password.\n");
+            }
+            this.StoreToDisk(content, AESOps.Decrypt);
         }
 
-        private void StoreToDisk(string content)
+        private void StoreToDisk(string content, AESOps op)
         {
-            var newFile = "newfile.txt";
-            File.Create(newFile);
-            File.WriteAllText(newFile, content);
+            string dir = "";
+            switch (op)
+            {
+                case AESOps.Encrypt:
+                    dir = Path.Combine(new string[] {
+                                    this.FilePath.Replace(Path.GetFileName(this.FilePath), ""),
+                                    "ECV_" + Path.GetFileName(this.FilePath)
+                                });
+                    break;
+                    
+                case AESOps.Decrypt:
+                    dir = "";
+                    break;
+            }
+
+            File.Create(dir);
+            File.WriteAllText(dir, content);
         }
 
         public void work(string password)
