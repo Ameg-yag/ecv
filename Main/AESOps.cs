@@ -1,7 +1,7 @@
 
 namespace ecv.enums
 {
-    enum AESOps
+    public enum AESOps
     {
         Encrypt,
         Decrypt

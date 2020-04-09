@@ -2,6 +2,8 @@
 using ecv.crypto;
 using ecv.enums;
 using ecv.exceptions;
+using ecv.files;
+using ecv.response;
 using System;
 using System.IO;
 using System.Security.Cryptography;
@@ -51,20 +53,20 @@ namespace ecv.main
             return output.ToString();
         }
 
-        private void Check()
+        private Response Check()
         {
             try
             {
                 string content = handleLargeFile(AESOps.Decrypt);
-                Console.WriteLine("Reliable");
             }
             catch (CryptographicException e)
             {
                 throw new DecryptionFailedException("Integrity Failed for file: " + this.FilePath + " Corrupted file or wrong password\n");
             }
+            return new Response{Code = 0, Message = "File is reliable: " + this.FilePath};
         }
 
-        private void Create()
+        private Response Create()
         {
             string content = "";
             try
@@ -75,10 +77,12 @@ namespace ecv.main
             {
                 throw new EncryptionFailedException("Failed encrypting file: " + this.FilePath + "\n");
             }
-            this.StoreToDisk(content, AESOps.Encrypt);
+            var newFile = Files.StoreToDisk(this.FilePath, AESOps.Encrypt, content);
+            return new Response{Code = 0, Message = "File created successfully: " + newFile};
+
         }
 
-        private void Recover()
+        private Response Recover()
         {
             string content = "";
             try
@@ -89,45 +93,26 @@ namespace ecv.main
             {
                 throw new DecryptionFailedException("Failed Recovering file: " + this.FilePath + " File corrupted or wrong password.\n");
             }
-            this.StoreToDisk(content, AESOps.Decrypt);
+            var newFile = Files.StoreToDisk(this.FilePath, AESOps.Decrypt, content);
+            return new Response{Code = 0, Message = "File recovered successfully: " + newFile};
         }
 
-        private void StoreToDisk(string content, AESOps op)
-        {
-            string dir = "";
-            switch (op)
-            {
-                case AESOps.Encrypt:
-                    dir = Path.Combine(new string[] {
-                                    this.FilePath.Replace(Path.GetFileName(this.FilePath), ""),
-                                    "ECV_" + Path.GetFileName(this.FilePath)
-                                });
-                    break;
-                    
-                case AESOps.Decrypt:
-                    dir = "";
-                    break;
-            }
 
-            File.Create(dir);
-            File.WriteAllText(dir, content);
-        }
-
-        public void work(string password)
+        public Response work(string password)
         {
             this.Password = password;
             this._gcm = new AESGCM(Encoding.ASCII.GetBytes(password));
             if (this.Operation == "check")
             {
-                this.Check();
+                return this.Check();
             }
             else if (this.Operation == "create")
             {
-                this.Create();
+                return this.Create();
             }
-            else if (this.Operation == "recover")
+            else
             {
-                this.Recover();
+                return this.Recover();
             }
         }
     }
