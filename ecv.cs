@@ -5,6 +5,7 @@ using ecv.crypto;
 using ecv.getpass;
 using ecv.parsing;
 using ecv.exceptions;
+using ecv.entropy;
 
 namespace ecv
 {
@@ -14,7 +15,12 @@ namespace ecv
         {
             Parser p = new Parser();
             var obj = p.Parse(args);
-            var password = GetPass.Prompt();
+            string password = "";
+            do
+            {
+                Console.WriteLine("Password: ");
+                password = GetPass.Prompt();
+            } while (!PasswordStrenght.IsStrongPassword(password));
 
             try
             {
