@@ -9,13 +9,22 @@ With this program, you can store senstive information inside a encrypted configu
 
 
 # Usage
-}
-./ecv create // create a new secure file
 
-./ecv recover // decrypt a file
+./ecv create {file} // create a new secure file
 
-./ecv check  // check integrity
+./ecv recover {file} // decrypt a file
+
+./ecv check {file} // check integrity
 
 
-Encrypt-then-MAC approach
+# Algorithm
 
+AES with GCM operation mode
+
+
+# TODO 
+
+    Support CI/CD pipelines reading password from file
+
+    future usage: 
+        ./ecv recover {fileDecrypt} {passwordPath}
