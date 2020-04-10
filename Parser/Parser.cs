@@ -24,11 +24,18 @@ Examples:
     ./ecv check /home/$USER/MyApp/appsettings.json // Check file integrity appsettings.json with your supplied key
 
 Algorithm used: AES with GCM operation mode.    
-
+Success:
+    - File created successfully - exit code: 0
+    - File is reliable - exit code: 0
+    - File recovered successfully - exit code: 0
 Errors:
-    -
-    -
-    -";
+    - Invalid number of arguments - exit code: 1 
+    - File supplied doesn't exist - exit code: 2
+    - Couldn't create a new file - exit code: 3
+    - Couldn't open the file - exit code: 3
+    - Integrity Failed - exit code: 3
+    - Failed encrypting the file - exit code: 3
+    - Unknown exception happened - exit code: 4";
 
         public string Usage { get => _usage; }
 
@@ -57,12 +64,12 @@ Errors:
             
             if (args[0] != "create" && args[0] != "recover" && args[0] != "check")
             {
-                this.Error("invalid argument: " + args[0] + "\nUsage: ecv --help", 2);
+                this.Error("invalid argument: " + args[0] + "\nUsage: ecv --help", 1);
             }
 
             if (!File.Exists(args[1]))
             {
-                this.Error("File : "+ args[1] + " doesn't exist.", 3);
+                this.Error("File : "+ args[1] + " doesn't exist.", 2);
             }
 
             return new Main { Operation = args[0], FilePath = args[1]};

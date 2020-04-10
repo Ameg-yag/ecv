@@ -24,8 +24,7 @@ namespace ecv
             Parser p = new Parser();
             var obj = p.Parse(args);
             Console.Write("Password: ");
-            // var password = GetPass.Prompt();
-            var password = "testing_password";
+            var password = GetPass.Prompt();
             Response resp = null;
             try
             {

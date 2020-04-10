@@ -35,7 +35,7 @@ namespace ecv.main
             }
             catch (Exception e)
             {
-                throw new FileReadException("Couldn't open file: " + this.FilePath);
+                throw new FileReadException("Couldn't open the file: " + this.FilePath);
             }
             switch (op)
             {
@@ -70,7 +70,7 @@ namespace ecv.main
             }
             catch (CryptographicException e)
             {
-                throw new EncryptionFailedException("Failed encrypting file: " + this.FilePath + "\n");
+                throw new EncryptionFailedException("Failed encrypting the file: " + this.FilePath + "\n");
             }
             
             var newFile = Files.StoreToDisk(this.FilePath, AESOps.Encrypt, content);
