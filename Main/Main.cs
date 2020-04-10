@@ -72,9 +72,9 @@ namespace ecv.main
             {
                 throw new EncryptionFailedException("Failed encrypting file: " + this.FilePath + "\n");
             }
+            
             var newFile = Files.StoreToDisk(this.FilePath, AESOps.Encrypt, content);
             return new Response { Code = 0, Message = "File created successfully: " + newFile };
-
         }
 
         private Response Recover()

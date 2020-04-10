@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using ecv.enums;
 
@@ -18,16 +19,26 @@ namespace ecv.files
                     break;
 
                 case AESOps.Decrypt:
-                    if(filepath.Contains("ECV_")){
+                    if (filepath.Contains("ECV_"))
+                    {
                         filepath = filepath.Replace("ECV_", "");
                     }
-                    dir = 
-                    dir = "";
+                    dir = filepath;
                     break;
             }
 
-            File.Create(dir);
-            File.WriteAllBytes(dir, content);
+            try
+            {
+                using (var fs = new FileStream(dir, FileMode.Create, FileAccess.Write))
+                {
+                    fs.Write(content, 0, content.Length);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FileReadException("Couldn't create a new file: " + dir);
+            }
+
             return dir;
         }
     }

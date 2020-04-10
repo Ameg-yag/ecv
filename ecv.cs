@@ -6,11 +6,19 @@ using ecv.getpass;
 using ecv.parsing;
 using ecv.exceptions;
 using ecv.entropy;
+using ecv.response;
 
 namespace ecv
 {
     class Program
     {
+
+        static void Exit(string message, int code)
+        {
+            Console.WriteLine(message);
+            System.Environment.Exit(code);
+        }
+
         static void Main(string[] args)
         {
             Parser p = new Parser();
@@ -18,22 +26,23 @@ namespace ecv
             Console.Write("Password: ");
             // var password = GetPass.Prompt();
             var password = "testing_password";
-
+            Response resp = null;
             try
             {
-                obj.work(password);
+                resp = obj.work(password);
             }
             catch (Exception e)
             {
                 if (e is EncryptionFailedException || e is DecryptionFailedException || e is FileReadException)
                 {
-                    Console.WriteLine(e.Message);
+                    Exit(e.Message, 3);
                 }
                 else
                 {
-                    Console.WriteLine("Unknown exception happened\n", e.Message);
+                    Exit("Unknown exception happened: " + e.Message, 4);
                 }
             }
+            Exit(resp.Message, resp.Code);
         }
     }
 }
