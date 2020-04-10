@@ -55,17 +55,17 @@ Errors:
             }
             
             
-            if (args[1] != "create" && args[1] != "recover" || args[1] != "check")
+            if (args[0] != "create" && args[0] != "recover" && args[0] != "check")
             {
-                this.Error("invalid argument: " + args[1] + "\nUsage: ecv --help", 2);
+                this.Error("invalid argument: " + args[0] + "\nUsage: ecv --help", 2);
             }
 
-            if (!File.Exists(args[2]) )
+            if (!File.Exists(args[1]))
             {
-                this.Error("File : "+ args[2] + " doesn't exist.", 3);
+                this.Error("File : "+ args[1] + " doesn't exist.", 3);
             }
 
-            return new Main { Operation = args[1], FilePath = args[2]};
+            return new Main { Operation = args[0], FilePath = args[1]};
         }
     }
 
