@@ -5,7 +5,7 @@ namespace ecv.files
 {
     public static class Files
     {
-        public static string StoreToDisk(string filepath, AESOps op, string content)
+        public static string StoreToDisk(string filepath, AESOps op, byte[] content)
         {
             string dir = "";
             switch (op)
@@ -18,12 +18,16 @@ namespace ecv.files
                     break;
 
                 case AESOps.Decrypt:
+                    if(filepath.Contains("ECV_")){
+                        filepath = filepath.Replace("ECV_", "");
+                    }
+                    dir = 
                     dir = "";
                     break;
             }
 
             File.Create(dir);
-            File.WriteAllText(dir, content);
+            File.WriteAllBytes(dir, content);
             return dir;
         }
     }

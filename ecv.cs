@@ -15,8 +15,9 @@ namespace ecv
         {
             Parser p = new Parser();
             var obj = p.Parse(args);
-            Console.WriteLine("Password: ");
-            var password = GetPass.Prompt();
+            Console.Write("Password: ");
+            // var password = GetPass.Prompt();
+            var password = "testing_password";
 
             try
             {
@@ -24,7 +25,7 @@ namespace ecv
             }
             catch (Exception e)
             {
-                if (e is EncryptionFailedException || e is DecryptionFailedException)
+                if (e is EncryptionFailedException || e is DecryptionFailedException || e is FileReadException)
                 {
                     Console.WriteLine(e.Message);
                 }
