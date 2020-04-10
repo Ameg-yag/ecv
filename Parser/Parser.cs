@@ -28,8 +28,7 @@ Algorithm used: AES with GCM operation mode.
 Errors:
     -
     -
-    -
-        ";
+    -";
 
         public string Usage { get => _usage; }
 
@@ -41,20 +40,24 @@ Errors:
 
         public Main Parse(string[] args)
         {
+            if(args.Length < 1){
+                this.Error("Invalid number of arguments, use -h or --help for usage.", 1);
+            }
+
             if (args[0] == "-h" || args[0] == "--help")
             {
                 this.Error(this._usage, 0);
             }
 
-            if (args.Length != 3)
+            if (args.Length != 2)
             {
-                this.Error("Invalid number of arguments, use -h or --help for usage.\n", 1);
+                this.Error("Invalid number of arguments, use -h or --help for usage.", 1);
             }
             
             
             if (args[1] != "create" && args[1] != "recover" || args[1] != "check")
             {
-                this.Error("invalid argument: " + args[1] + "\nUsage: ecv --help\n", 2);
+                this.Error("invalid argument: " + args[1] + "\nUsage: ecv --help", 2);
             }
 
             if (!File.Exists(args[2]) )

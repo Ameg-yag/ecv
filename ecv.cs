@@ -15,12 +15,8 @@ namespace ecv
         {
             Parser p = new Parser();
             var obj = p.Parse(args);
-            string password = "";
-            do
-            {
-                Console.WriteLine("Password: ");
-                password = GetPass.Prompt();
-            } while (!PasswordStrenght.IsStrongPassword(password));
+            Console.WriteLine("Password: ");
+            var password = GetPass.Prompt();
 
             try
             {
